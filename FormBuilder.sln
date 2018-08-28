@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4CCAEDE2-9B37-4A99-A9D4-FB549EC8E510}"
+	ProjectSection(SolutionItems) = preProject
+		gitignore.txt = gitignore.txt
+		licenses.licx = licenses.licx
+		package.json = package.json
+		README.md = README.md
+		webpack.config.js = webpack.config.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{10079062-EBBF-44C6-951D-406677096E33}"
+	ProjectSection(SolutionItems) = preProject
+		src\index.html = src\index.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{872B3E78-3B05-4595-8CF9-7E35EF7BD3E6}"
+	ProjectSection(SolutionItems) = preProject
+		src\app\index.js = src\app\index.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "component", "component", "{E9666BE7-8390-4398-836E-9C4A8F76BFF2}"
+	ProjectSection(SolutionItems) = preProject
+		src\app\component\Builder.js = src\app\component\Builder.js
+		src\app\component\Header.js = src\app\component\Header.js
+		src\app\component\Home.js = src\app\component\Home.js
+		src\app\component\Root.js = src\app\component\Root.js
+		src\app\component\Submissions.js = src\app\component\Submissions.js
+		src\app\component\Submit.js = src\app\component\Submit.js
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{10079062-EBBF-44C6-951D-406677096E33} = {4CCAEDE2-9B37-4A99-A9D4-FB549EC8E510}
+		{872B3E78-3B05-4595-8CF9-7E35EF7BD3E6} = {10079062-EBBF-44C6-951D-406677096E33}
+		{E9666BE7-8390-4398-836E-9C4A8F76BFF2} = {872B3E78-3B05-4595-8CF9-7E35EF7BD3E6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51806165-D058-4C11-8FA9-FB0BDBA1FD84}
+	EndGlobalSection
+EndGlobal
