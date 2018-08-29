@@ -61,7 +61,7 @@ export class Submissions extends React.Component {
                         className="btn btn-success">
                             <NavLink 
                                 to={"/Home"} 
-                                activeClassName="active" > 
+                                className="White-Link" > 
                                 Back  
                             </NavLink> 
                         </button>

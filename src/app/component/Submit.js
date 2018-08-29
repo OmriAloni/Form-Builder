@@ -2,14 +2,13 @@ import React from "react";
 import createBrowserHistory from 'history/createBrowserHistory';
 const newHistory = createBrowserHistory();
 import { NavLink, Redirect } from "react-router-dom";
+const submitAddress = 'http://localhost:5000/api/submit';
 
 export class Submit extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-            redirect: false,
             formID: this.props.location.state.form.formID,
             formName: this.props.location.state.form.formName,
             numOfSubmissions: this.props.location.state.form.numOfSubmissions,
@@ -19,10 +18,17 @@ export class Submit extends React.Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        // this.handleSubmitForm = this.handleSubmitForm.bind(this.props.location.handleSubmitForm);
+        this.moveElements = this.moveElements.bind(this);
         
     }
-    
+
+    moveElements(source, target) {
+        for (var i = 0; i < source.length; i++) {
+            var element = source[i].inputFieldLabel;
+            target.push(element);         
+        }
+        return (target);
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -39,35 +45,38 @@ export class Submit extends React.Component {
         }
     }
 
+    updateDataBase(params) {
+        var request = new XMLHttpRequest();
+        request.open('POST', submitAddress, true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var jsonToSend = JSON.stringify(params);
+        request.send(jsonToSend);
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
-        this.setState({
-            numOfSubmissions: numOfSubmissions + 1
-        });
+        var formToAdd = this.props.location.state.form;
+        formToAdd.numOfSubmissions = formToAdd.numOfSubmissions + 1;
 
-        //handleSubmitForm(this.state); 
+        var submit = {
+            submitID: formToAdd.submits.length,
+            inputs: []
+        };
+
+        submit.inputs = this.moveElements(formToAdd.labels, submit.inputs);
+
+        formToAdd.submits.push(submit);
+
+        this.updateDataBase(formToAdd);
 
         let labels = this.state.labels.slice();
         for (let i in labels) {
                 labels[i].inputFieldLabel = '';
                 this.setState({ labels });
-        }
+         }
     }
-
-    renderRedirect = () => {
-        if (this.state.redirect) {
-            return <Redirect to={{ pathname: '/Home' }} />;
-        }
-    }
-
-    setRedirect = () => {
-        this.setState({
-            redirect: true
-        })
-    }
-
-
+   
     render() {
         return (
             <div className="container">
@@ -94,15 +103,15 @@ export class Submit extends React.Component {
 
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-10">
-                        {this.renderRedirect()}
-                        <button type="save" className="btn btn-success" onClick={() => { this.props.route.handleSubmitForm(this.state); this.setRedirect(); }}>Submit Form</button>
+                        <button type="save" className="btn btn-success" onClick={this.handleSubmit}>Submit Form</button>
                     </div>
                 </div>
+                
 
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-10">
                         <button type="save" className="btn btn-success">
-                            <NavLink to={"/Home"} activeClassName="active" > Back  </NavLink> </button>
+                            <NavLink to={"/Home"} className="White-Link" > Back  </NavLink> </button>
                     </div>
                 </div>
             </div>

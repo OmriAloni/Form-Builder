@@ -2,6 +2,7 @@ import React from "react";
 import createBrowserHistory from 'history/createBrowserHistory';
 const newHistory = createBrowserHistory();
 import { NavLink, Redirect } from "react-router-dom";
+const formAddress = 'http://localhost:5000/api/builder';
 
 
 export class Builder extends React.Component {
@@ -9,8 +10,8 @@ export class Builder extends React.Component {
         super(props);
 
         this.state = {
-            saveForm: false,
-            formName: 'VISA',
+            last: this.props.location.state.last,
+            formName: '',
             inputs: [
                 {
                     inputName: 'First Name',
@@ -25,10 +26,17 @@ export class Builder extends React.Component {
             ]
         };
 
-
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.appendInput = this.appendInput.bind(this);
+    }
+
+    updateDataBase(params) {
+        var request = new XMLHttpRequest();
+        request.open('POST', formAddress, true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var jsonToSend = JSON.stringify(params);
+        request.send(jsonToSend);
     }
 
     handleInputChange(event) {
@@ -51,19 +59,20 @@ export class Builder extends React.Component {
     handleSave(event) { 
         event.preventDefault();
         
-        this.props.handleAddForm(this.state);
-        this.setState({ saveForm: true });
+        var form = {
+            formID: this.state.last ,
+            formName: this.state.formName,
+            labels: this.state.inputs,
+            numOfSubmissions: 0,
+            submits: []
+        };
+        this.updateDataBase(form);
 
         this.setState({
+            last: this.state.last +1,
             formName: '',
             inputs: []
         });
-    }
-
-    renderRedirect = () => {
-        if (this.state.saveForm) {
-            return (<Redirect to='/Home' />);
-        }
     }
 
     appendInput() {
@@ -74,10 +83,14 @@ export class Builder extends React.Component {
             inputFieldLabel: document.getElementById("FieldLabel").value,
             inputType: document.getElementById("inputType").value
         };
-
-        this.setState({ inputs: this.state.inputs.concat([newInput]) });
+        if(newInput.inputName !== '' || newInput.inputFieldLabel !== '' ){
+            this.setState({ inputs: this.state.inputs.concat([newInput]) });
+            this.setState({
+                inputName: '',
+                inputFieldLabel: '',
+            });
+        }
     }
-
 
     render() {
         return (
@@ -126,19 +139,23 @@ export class Builder extends React.Component {
                                 id="inputType"
                                 onChange={this.handleInputChange}
                             >
-                                <option value="text">text</option>
-                                <option value="color">color</option>
-                                <option value="date">date</option>
-                                <option value="tel">tel</option>
-                                <option value="number">number</option>
-                                <option value="email">email</option>
+                                <option value="text">Text</option>
+                                <option value="color">Color</option>
+                                <option value="date">Date</option>
+                                <option value="tel">Telephone</option>
+                                <option value="number">Number</option>
+                                <option value="email">E-mail</option>
                             </select>
                         </div>
                     </div>
 
                     <div className="form-group">
                         <div className="col-sm-offset-2 col-sm-10">
-                            <button type="save" className="btn btn-success" onClick={this.appendInput}>Add Label</button>
+                            <button 
+                                type="save" 
+                                className="btn btn-success" 
+                                onClick={this.appendInput}> Add Label
+                            </button>
                         </div>
                     </div>
 
@@ -146,7 +163,10 @@ export class Builder extends React.Component {
 
                     {this.state.inputs.map((input, index) => (
                         <div className="inputs">
-                            <label htmlFor="labels" className="col-sm-2 control-label">  {input.inputName} </label>
+                            <label 
+                                htmlFor="labels"
+                                className="col-sm-2 control-label"> {input.inputName}
+                            </label>
                             <input
                                 readOnly
                                 name={input.inputName}
@@ -157,7 +177,7 @@ export class Builder extends React.Component {
                     ))}
 
                     <hr />
-                    <p> When done, choose form name and click Save</p>
+                    <p> When done, choose name for the form  and click Save Form</p>
                     
                     <div className="form-group">
                         <label htmlFor="FormName" className="col-sm-2 control-label">  Form Name: </label>
@@ -168,7 +188,7 @@ export class Builder extends React.Component {
                                 id="FormName"
                                 value={this.state.formName}
                                 onChange={(e) => this.setState({ formName: e.target.value })}
-                                placeholder="FormName"
+                                placeholder="Form Name"
                             >
                             </input>
                         </div>
@@ -176,14 +196,16 @@ export class Builder extends React.Component {
 
                     <div className="form-group">
                         <div className="col-sm-offset-2 col-sm-10">
-                                <button type="save" className="btn btn-success" onClick={this.handleSave}>Save Form</button>
+                            <button type="save" className="btn btn-success" onClick={this.handleSave}>
+                                    Save Form 
+                            </button>
                         </div>
                     </div>
 
                     <button 
                         type="save"
                         className="btn btn-success">
-                            <NavLink to={"/Home"} activeClassName="active" >
+                            <NavLink to={"/Home"} className="White-Link" >
                                 Back  
                             </NavLink>
                     </button>
@@ -194,5 +216,3 @@ export class Builder extends React.Component {
     
     get displayName() { return 'Builder'; }
 }
-
-

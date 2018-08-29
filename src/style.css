@@ -1,0 +1,7 @@
+.White-Link:link {
+    color: black;
+}
+
+.White-Link:visited {
+    color: white;
+}
