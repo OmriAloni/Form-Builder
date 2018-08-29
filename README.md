@@ -5,8 +5,8 @@ Welcome to the Form Builder application. This app is simple, you can create a cu
 Instructions:
 - Download the Wix-Form-Builder-master ZIP
 - Extract the files
-- open the terminal
+- Open the terminal
 - cd into \Wix-Form-Builder-master\Server
-- type "npm run dev" and press enter
-- open your browser and go to http://localhost:8080
-- enjoy the app :+1: 
+- Type "npm run dev" and press enter
+- Open your browser and go to http://localhost:8080
+- Enjoy the app :+1:
