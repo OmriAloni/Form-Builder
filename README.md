@@ -1,7 +1,7 @@
 Form Builder Task
 Welcome to the Form Builder application. This app is simple, you can create a custom form and anyone can submit answer.
 
-Instrctions:
+Instructions:
 - Download the Wix-Form-Builder-master ZIP
 - Extract the files
 - open the terminal
