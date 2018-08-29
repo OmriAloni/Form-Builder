@@ -12,7 +12,6 @@
   "author": "Omri Alon",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.6.1",
     "body-parser": "^1.18.3",
     "concurrently": "^4.0.1",
     "express": "^4.16.3"
