@@ -58,21 +58,22 @@ export class Builder extends React.Component {
 
     handleSave(event) { 
         event.preventDefault();
-        
-        var form = {
-            formID: this.state.last ,
-            formName: this.state.formName,
-            labels: this.state.inputs,
-            numOfSubmissions: 0,
-            submits: []
-        };
-        this.updateDataBase(form);
+        if(this.state.formName !== ''){
+            var form = {
+                    formID: this.state.last ,
+                    formName: this.state.formName,
+                    labels: this.state.inputs,
+                    numOfSubmissions: 0,
+                    submits: []
+            };
+            this.updateDataBase(form);
 
-        this.setState({
-            last: this.state.last +1,
-            formName: '',
-            inputs: []
-        });
+            this.setState({
+                last: this.state.last +1,
+                formName: '',
+                inputs: []
+            });
+        }
     }
 
     appendInput() {
