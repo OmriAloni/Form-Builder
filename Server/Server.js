@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+// the data base of the forms
 const db ={
             last : 2,
             forms : [
@@ -73,33 +74,37 @@ const db ={
             ]
           }
 
-
+// to avoid CORS
 app.use(function(req,res,next){
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
  });
 
-var bodyParser = require('body-parser');
+var bodyParser = require('body-parser'); // parse the JSON input
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+// sends the forms to the client as result
 app.get('/api/forms', (req, res) => {
   res.json(db.forms);
 });
 
+// sends last to the client as result
 app.get('/api/last', (req, res) => {
     res.json(db.last);
   });
 
+// get a form from the client and adds it to DB. 
+//req = new form
 app.post('/api/builder', function(req, res) {
-  db.forms.push(req.body);
-  db.last = db.last +1;
+  db.forms.push(req.body); // update form in forms arr
+  db.last = db.last +1; // +1 to the ID
 
   res.json("Form added");
-  
 })
 
+// get a submited form from the client and adds it to DB. 
 app.post('/api/submit',(req,res) =>{
   for (var i = 0; i < db.forms.length; i++) {
     var db_id = db.forms[i].formID;
