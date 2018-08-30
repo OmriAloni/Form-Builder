@@ -8,7 +8,7 @@ Instructions:
 - Open the terminal.
 - cd into \Wix-Form-Builder-master.
 - Type "npm i" and press enter. this may take a minute.
-- when done, cd into \Server.
+- when done, type "cd Server" and press enter.
 - Type "npm i" and press enter. this may take a minute.
 - when done, type "npm run dev" and press enter.
 - Open your browser and go to http://localhost:8080
