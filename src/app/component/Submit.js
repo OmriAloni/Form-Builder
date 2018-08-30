@@ -1,14 +1,12 @@
 import React from "react";
-import createBrowserHistory from 'history/createBrowserHistory';
-const newHistory = createBrowserHistory();
-import { NavLink, Redirect } from "react-router-dom";
-const submitAddress = 'http://localhost:5000/api/submit';
+import { NavLink } from "react-router-dom";
+const submitAddress = 'http://localhost:5000/api/submit'; // adress to send a submission to DB
 
 export class Submit extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = {  // state = form with all his updated fields
             formID: this.props.location.state.form.formID,
             formName: this.props.location.state.form.formName,
             numOfSubmissions: this.props.location.state.form.numOfSubmissions,
@@ -17,12 +15,13 @@ export class Submit extends React.Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.moveElements = this.moveElements.bind(this);
+        this.handleSubmitForm = this.handleSubmitForm.bind(this);
+        this.labelsToInputs = this.labelsToInputs.bind(this);
         
     }
 
-    moveElements(source, target) {
+    // copy elemnts from the source arr to the target arr
+    labelsToInputs(source, target) { 
         for (var i = 0; i < source.length; i++) {
             var element = source[i].inputFieldLabel;
             target.push(element);         
@@ -30,47 +29,49 @@ export class Submit extends React.Component {
         return (target);
     }
 
-    handleInputChange(event) {
+    handleInputChange(event) { // updates the input from I/O @event - onChange of inputs blocks
         const target = event.target;
         const value = target.value;
         const name = target.name;
         
         let labels = this.state.labels.slice();
         for (let i in labels) {
-            if (labels[i].inputName === name) {
-                labels[i].inputFieldLabel = value;
+            if (labels[i].inputName === name) { // serach for the input name in the inputs arr 
+                labels[i].inputFieldLabel = value; //update his values
                 this.setState({ labels });
                 break;
             }
         }
     }
 
-    updateDataBase(params) {
-        var request = new XMLHttpRequest();
+    updateDataBase(params) { // sends a form to the server @params- form
+        var request = new XMLHttpRequest();  // XMLrequest
         request.open('POST', submitAddress, true);
         request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         var jsonToSend = JSON.stringify(params);
-        request.send(jsonToSend);
+        request.send(jsonToSend); // send in json format
     }
 
-    handleSubmit(event) {
+    // handles "submit form" click. creates and sends the submited form to data base
+    handleSubmitForm(event) {  
         event.preventDefault();
 
-        var formToAdd = this.props.location.state.form;
-        formToAdd.numOfSubmissions = formToAdd.numOfSubmissions + 1;
+        var formToAdd = this.props.location.state.form; // the form we send
+        formToAdd.numOfSubmissions = formToAdd.numOfSubmissions + 1; // update num of submmisions
 
-        var submit = {
+        var submit = { // a submit object
             submitID: formToAdd.submits.length,
             inputs: []
         };
 
-        submit.inputs = this.moveElements(formToAdd.labels, submit.inputs);
+        // copy elemnts from the labels arr to the submit inputs arr
+        submit.inputs = this.labelsToInputs(formToAdd.labels, submit.inputs); 
 
-        formToAdd.submits.push(submit);
+        formToAdd.submits.push(submit); // update the submit
 
-        this.updateDataBase(formToAdd);
+        this.updateDataBase(formToAdd); // send to DB
 
-        let labels = this.state.labels.slice();
+        let labels = this.state.labels.slice(); // initalize the labels
         for (let i in labels) {
                 labels[i].inputFieldLabel = '';
                 this.setState({ labels });
@@ -81,7 +82,7 @@ export class Submit extends React.Component {
         return (
             <div className="container">
                 <h2> {this.state.formName} form </h2>
-                <p> please fill the {this.state.formName} form and click Submit </p>
+                <p> please fill the {this.state.formName} Form and click Submit </p>
       
                 <div className="form-group">
                     {this.state.labels.map((label, index) => (
@@ -103,7 +104,7 @@ export class Submit extends React.Component {
 
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-10">
-                        <button type="save" className="btn btn-success" onClick={this.handleSubmit}>Submit Form</button>
+                        <button type="save" className="btn btn-success" onClick={this.handleSubmitForm}>Submit Form</button>
                     </div>
                 </div>
                 

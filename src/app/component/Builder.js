@@ -1,8 +1,7 @@
 import React from "react";
-import createBrowserHistory from 'history/createBrowserHistory';
-const newHistory = createBrowserHistory();
-import { NavLink, Redirect } from "react-router-dom";
-const formAddress = 'http://localhost:5000/api/builder';
+import { NavLink } from "react-router-dom";
+
+const formAddress = 'http://localhost:5000/api/builder'; // Adress for the server
 
 
 export class Builder extends React.Component {
@@ -10,9 +9,9 @@ export class Builder extends React.Component {
         super(props);
 
         this.state = {
-            last: this.props.location.state.last,
-            formName: '',
-            inputs: [
+            last: this.props.location.state.last, //  hold the id of the last form
+            formName: '', // saves the form name
+            inputs: [   // array of the form labels
                 {
                     inputName: 'First Name',
                     inputFieldLabel: 'Omri',
@@ -27,48 +26,47 @@ export class Builder extends React.Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.appendInput = this.appendInput.bind(this);
+        this.handleSaveForm = this.handleSaveForm.bind(this);
+        this.handleAddLabel = this.handleAddLabel.bind(this);
     }
 
-    updateDataBase(params) {
-        var request = new XMLHttpRequest();
+    updateDataBase(params) { // sends a form to the server @params- form
+        var request = new XMLHttpRequest(); // XMLrequest
         request.open('POST', formAddress, true);
         request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var jsonToSend = JSON.stringify(params);
+        var jsonToSend = JSON.stringify(params); // send in json format
         request.send(jsonToSend);
     }
 
-    handleInputChange(event) {
+    handleInputChange(event) { // updates the input from I/O @event - onChange of inputs blocks
         const target = event.target;
         const value = target.value;
         const name = target.name;
 
         let inputs = this.state.inputs.slice();
         for (let i in inputs) {
-            if (inputs[i].inputName === name) {
-                inputs[i].inputFieldLabel = value;
+            if (inputs[i].inputName === name) { // serach for the input name in the inputs arr 
+                inputs[i].inputFieldLabel = value; //update his values
                 inputs[i].inputType = value;
                 this.setState({ inputs });
                 break;
             }
-        }
-        
+        }   
     }
 
-    handleSave(event) { 
+    handleSaveForm(event) { // handles "save form" click. sends the form to data base
         event.preventDefault();
-        if(this.state.formName !== ''){
-            var form = {
+        if(this.state.formName !== ''){ // input check - cannot get empty name
+            var form = { // the form that was created
                     formID: this.state.last ,
                     formName: this.state.formName,
                     labels: this.state.inputs,
                     numOfSubmissions: 0,
                     submits: []
             };
-            this.updateDataBase(form);
+            this.updateDataBase(form); // update data base
 
-            this.setState({
+            this.setState({ // initalize for next form
                 last: this.state.last +1,
                 formName: '',
                 inputs: []
@@ -76,21 +74,22 @@ export class Builder extends React.Component {
         }
     }
 
-    appendInput() {
+    handleAddLabel() { // handles "add label" click.adds the label to inputs arr
         event.preventDefault();
         
-        var newInput = {
+        var newInput = { // the input to add with the user values
             inputName: document.getElementById("inputName").value,
             inputFieldLabel: document.getElementById("FieldLabel").value,
             inputType: document.getElementById("inputType").value
         };
-        if(newInput.inputName !== '' || newInput.inputFieldLabel !== '' ){
-            this.setState({ inputs: this.state.inputs.concat([newInput]) });
-            this.setState({
-                inputName: '',
-                inputFieldLabel: '',
-            });
+        if(newInput.inputName !== '' || newInput.inputFieldLabel !== '' ){ // cannot get empty values
+            this.setState({ 
+                inputs: this.state.inputs.concat([newInput]), 
+                inputName:'',
+                inputFieldLabel:''
+             });
         }
+            else {}
     }
 
     render() {
@@ -155,7 +154,7 @@ export class Builder extends React.Component {
                             <button 
                                 type="save" 
                                 className="btn btn-success" 
-                                onClick={this.appendInput}> Add Label
+                                onClick={this.handleAddLabel}> Add Label
                             </button>
                         </div>
                     </div>
@@ -197,7 +196,7 @@ export class Builder extends React.Component {
 
                     <div className="form-group">
                         <div className="col-sm-offset-2 col-sm-10">
-                            <button type="save" className="btn btn-success" onClick={this.handleSave}>
+                            <button type="save" className="btn btn-success" onClick={this.handleSaveForm}>
                                     Save Form 
                             </button>
                         </div>

@@ -1,7 +1,8 @@
 import React from "react";
-import { NavLink, Redirect } from "react-router-dom";
-const formsAddress = 'http://localhost:5000/api/forms';
-const lastAddress = 'http://localhost:5000/api/last';
+import { NavLink } from "react-router-dom";
+
+const formsAddress = 'http://localhost:5000/api/forms'; //adress to fetch forms from DB 
+const lastAddress = 'http://localhost:5000/api/last'; // adress to fetch last ID from DB
 
 
 export class Home extends React.Component {
@@ -9,28 +10,34 @@ export class Home extends React.Component {
         super(props);
 
         this.state = {
-            last: 2,
-            forms: []
+            last: 2, // holds the id of the last form
+            forms: [] // holds all the forms and their submissions
         };  
     }
     
-    componentDidMount(){
+    componentDidMount(){ // runs at the begging of the component lifecycle to fetch data from DB
+        // fetch forms
         fetch(formsAddress)
         .then(res => res.json())
         .then (forms => this.setState({forms}, ()=> console.log('Forms fetched..',
         forms)));
-
+        //fetch last
         fetch(lastAddress)
         .then(res => res.json())
         .then (last => this.setState({last},()=> console.log('last fetched',
         last)));
     }
 
-    
+    // forms a row at the forms table with the following columns
+    //  Form id
+    //  Form Name
+    //  Number of Submissions
+    //  link to Form Submit Page
+    //  link to Form Submissions Page
     FormRow = (props) => { 
         return (
             <tr>
-                <td>{props.data.formID}</td>
+                <td>{props.data.formID}</td> 
                 <td>{props.data.formName}</td>
                 <td>{props.data.numOfSubmissions}</td>
                 <td><NavLink to={{ pathname: '/Submit', state: { form: props.data } }} > View </NavLink></td>
@@ -53,7 +60,7 @@ export class Home extends React.Component {
         return (
             <div className="container">
                 <h4> Form Builder App </h4>
-                <p>To add a new form: click Create Form</p>
+                <p>To add a new form, press Create Form</p>
 
                 <table ata-toggle="table1" cellPadding="10" border="1" >
                     <thead>
@@ -84,5 +91,6 @@ export class Home extends React.Component {
             </div>
         );    
     }
+    
     get displayName() { return 'Home'; }
 }

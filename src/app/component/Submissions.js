@@ -1,13 +1,11 @@
 import React from "react";
-import createBrowserHistory from 'history/createBrowserHistory';
-const newHistory = createBrowserHistory();
 import { NavLink } from "react-router-dom";
 
 export class Submissions extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.state = { // state = form with all his updated fields
             formID: this.props.location.state.form.formID,
             formName: this.props.location.state.form.formName,
             numOfSubmissions: this.props.location.state.form.numOfSubmissions,
@@ -16,6 +14,10 @@ export class Submissions extends React.Component {
         };
     }
 
+    // forms a row at the submissions table  when each header is the field name,
+    // and each row is a submission with the user input. with the following columns
+    //  submit id
+    //  the labels with the user input
     FormRow = (props) => {
         return (
             <tr>
@@ -38,7 +40,7 @@ export class Submissions extends React.Component {
 
         return (
             <div className="container">
-                <h2>{this.state.formName} Submissions </h2>
+                <h2>{this.state.formName} Form Submissions </h2>
                 
                 <table ata-toggle="table" cellPadding="10" border="1" text-indent= "10px" >
                     <thead>
