@@ -9,6 +9,9 @@ export class Builder extends React.Component {
         super(props);
 
         this.state = {
+            inputName:'',
+            inputFieldLabel:'',
+            inputType: '',
             last: this.props.location.state.last, //  hold the id of the last form
             formName: '', // saves the form name
             inputs: [   // array of the form labels
@@ -28,30 +31,28 @@ export class Builder extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSaveForm = this.handleSaveForm.bind(this);
         this.handleAddLabel = this.handleAddLabel.bind(this);
+        this.handleDeleteLabel = this.handleDeleteLabel.bind(this);
+
     }
 
-    updateDataBase(params) { // sends a form to the server @params- form
+    updateDataBase(form) { // sends a form to the server @params- form
         var request = new XMLHttpRequest(); // XMLrequest
         request.open('POST', formAddress, true);
         request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var jsonToSend = JSON.stringify(params); // send in json format
-        request.send(jsonToSend);
+        var formAsJson = JSON.stringify(form); // send in json format
+        request.send(formAsJson);
     }
 
     handleInputChange(event) { // updates the input from I/O @event - onChange of inputs blocks
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
+        const value = event.target.value;
+        const name = event.target.name;
 
-        let inputs = this.state.inputs.slice();
-        for (let i in inputs) {
-            if (inputs[i].inputName === name) { // serach for the input name in the inputs arr 
-                inputs[i].inputFieldLabel = value; //update his values
-                inputs[i].inputType = value;
-                this.setState({ inputs });
-                break;
-            }
-        }   
+        if (name === 'inputName')
+            this.setState({inputName: value})
+        else  if (name === 'inputFieldLabel')
+            this.setState({inputFieldLabel: value})
+        else if (name === 'inputType')
+            this.setState({inputType: value})
     }
 
     handleSaveForm(event) { // handles "save form" click. sends the form to data base
@@ -67,10 +68,23 @@ export class Builder extends React.Component {
             this.updateDataBase(form); // update data base
 
             this.setState({ // initalize for next form
-                last: this.state.last +1,
+                last: this.state.last + 1, // if you save another form on the same time (didnt get from server yet)
                 formName: '',
                 inputs: []
             });
+        }
+    }
+    
+    handleDeleteLabel(inputToDelete) { // handles "delete label" click. delete the label from inputs arr
+        event.preventDefault();
+        
+        let inputs = this.state.inputs.slice();
+        for (let i in inputs) {
+            if (inputs[i].inputName === inputToDelete.inputName) { // serach for the input name in the inputs arr 
+                inputs.splice(i, 1); //remove it
+                this.setState({ inputs });
+                break;
+            }
         }
     }
 
@@ -86,10 +100,10 @@ export class Builder extends React.Component {
             this.setState({ 
                 inputs: this.state.inputs.concat([newInput]), 
                 inputName:'',
-                inputFieldLabel:''
+                inputFieldLabel:'',
              });
         }
-            else {}
+        else {}
     }
 
     render() {
@@ -173,6 +187,11 @@ export class Builder extends React.Component {
                                 value={input.inputFieldLabel}
                                 type= {input.inputType}
                             />
+                            &emsp;
+                            <button type="button" className="btn btn-danger btn-sm" onClick= {() => this.handleDeleteLabel(input)}>
+                                Delete Label 
+                            </button>
+                            
                         </div>
                     ))}
 
