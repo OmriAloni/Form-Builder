@@ -1,9 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const formsAddress = 'http://localhost:5000/api/forms'; //adress to fetch forms from DB 
-const lastAddress = 'http://localhost:5000/api/last'; // adress to fetch last ID from DB
-
+const formsAddress  = 'http://localhost:5000/api/forms';  //adress to fetch forms from DB 
+const lastAddress   = 'http://localhost:5000/api/last';   // adress to fetch last ID from DB
+const deleteAddress = 'http://localhost:5000/api/delete'; // adress to delete form from DB
 
 export class Home extends React.Component {
     constructor(props) {
@@ -12,10 +12,11 @@ export class Home extends React.Component {
         this.state = {
             last: 2, // holds the id of the last form
             forms: [] // holds all the forms and their submissions
-        };  
+        };
+        this.handleDeleteForm = this.handleDeleteForm.bind(this);  
     }
     
-    componentDidMount(){ // runs at the begging of the component lifecycle to fetch data from DB
+    componentWillMount(){ // runs at the begging of the component lifecycle to fetch data from DB
         // fetch forms
         fetch(formsAddress)
         .then(res => res.json())
@@ -28,6 +29,33 @@ export class Home extends React.Component {
         last)));
     }
 
+    handleDeleteForm(formToDelete) { // handles "delete form" click. send a request to server to delete form
+        event.preventDefault();
+        
+        for (var i = 0; i < this.state.forms.length; i++) { // duplicates the server code - to be reconsidered
+            var curr_id = this.state.forms[i].formID;
+            if (formToDelete.formID === curr_id)
+            {
+              this.setState({forms: this.state.forms.splice(i, 1)}); //remove it from forms state
+              break;
+            }
+          }
+
+        var request = new XMLHttpRequest(); // XMLrequest to delete the form
+        request.open('POST', deleteAddress, true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var formAsJson = JSON.stringify(formToDelete); // send in json format
+        request.send(formAsJson);
+        console.log(this.state.forms);       
+        
+        // //fetch the forms again
+        // fetch(formsAddress)
+        // .then(res => res.json())
+        // .then (forms => this.setState({forms}));
+        // console.log(this.state.forms);
+    }
+
+    
     // forms a row at the forms table with the following columns
     //  Form id
     //  Form Name
@@ -40,8 +68,12 @@ export class Home extends React.Component {
                 <td>{props.data.formID}</td> 
                 <td>{props.data.formName}</td>
                 <td>{props.data.numOfSubmissions}</td>
-                <td><NavLink to={{ pathname: '/Submit', state: { form: props.data } }} > View </NavLink></td>
-                <td><NavLink to={{ pathname: '/Submissions', state: { form: props.data } }} > View </NavLink></td>
+                <td><NavLink to={{ pathname: '/Submit' + props.formPath, state: { form: props.data } }} > View </NavLink></td>
+                <td><NavLink to={{ pathname: '/Submissions' + props.formPath, state: { form: props.data } }} > View </NavLink></td>
+                <td> <button type="button" className="btn btn-danger btn-sm" onClick= {() => this.handleDeleteForm(props.data)}>
+                                Delete 
+                    </button>
+                </td>
             </tr>
         );
     }
@@ -65,11 +97,12 @@ export class Home extends React.Component {
                 <table ata-toggle="table1" cellPadding="10" border="1" >
                     <thead>
                         <tr>
-                            <th>   Form ID   </th>
-                            <th>   Form Name   </th>
-                            <th>   # Submissions   </th>
-                            <th>   Submit Page   </th>
-                            <th>   Submissions Page   </th>
+                            <th>   Form ID          </th>
+                            <th>   Form Name        </th>
+                            <th>   # Submissions    </th>
+                            <th>   Submit Page      </th>
+                            <th>   Submissions Page </th>
+                            <th>                    </th>
                         </tr>
                     </thead>
                     <tbody> {rows} </tbody>
