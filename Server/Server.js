@@ -74,7 +74,7 @@ const db ={
             ]
           }
 
-// to avoid CORS
+// to allow CORS (Cross-origin resource sharing )
 app.use(function(req,res,next){
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -101,7 +101,7 @@ app.post('/api/builder', function(req, res) {
   db.forms.push(req.body); // update form in forms arr
   db.last = db.last +1; // +1 to the ID
 
-  res.json("Form added");
+  res.json("form added");
 })
 
 // get a submited form from the client and adds it to DB. 
@@ -114,8 +114,21 @@ app.post('/api/submit',(req,res) =>{
       break;
     }
   }
-  res.json("submit added");
+  res.json(db.forms);
 })
+
+// get a form from client to delete from DB
+app.post('/api/delete',(req,res) =>{
+    for (var i = 0; i < db.forms.length; i++) {
+      var db_id = db.forms[i].formID;
+      if (req.body.formID === db_id)
+      {
+        db.forms.splice(i, 1); //remove it
+        break;
+      }
+    }
+    res.json("form deleted");
+  })
 
 const port = 5000;
 
