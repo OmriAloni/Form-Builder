@@ -86,7 +86,7 @@ app.use(function(req,res,next){
 
 var bodyParser = require('body-parser'); // parse the JSON input
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
 
 // sends the forms to the client as result
 app.get('/api/forms', (req, res) => {
@@ -98,38 +98,38 @@ app.get('/api/last', (req, res) => {
     res.json(db.last);
   });
 
-// app.post('/api/reCAPTCHA', (req, res) => {
-//     if(
-//       req.body.captcha === undefined ||
-//       req.body.captcha === '' ||
-//       req.body.captcha === null
-//     )
-//     {
-//       return res.json({"success": false, "msg":"Please select captcha"});
-//     }
+app.post('/api/recaptcha', (req, res) => {
+    if(
+      req.body.captcha === undefined ||
+      req.body.captcha === '' ||
+      req.body.captcha === null
+    )
+    {
+      return res.json({"success": false, "msg":"Please select captcha"});
+    }
 
-// // Secret Key
-// const secretKey = '6LfHfHAUAAAAAIpMU1uBqtH5fXfHghY5zgiIBA0w';
+// Secret Key
+const secretKey = '6LfHfHAUAAAAAIpMU1uBqtH5fXfHghY5zgiIBA0w';
 
-// // Verify URL
-// const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}
-//                     &response=${req.body.captcha}
-//                     &remoteip=${req.connection.remoteAddress}`;
+// Verify URL
+const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}
+                    &response=${req.body.captcha}
+                    &remoteip=${req.connection.remoteAddress}`;
 
-// // Make Request To VerifyURL
-// request(verifyUrl, (err, response, body) => {
-//     body = JSON.parse(body);
-//     console.log(body);
+// Make Request To VerifyURL
+request(verifyUrl, (err, response, body) => {
+    body = JSON.parse(body);
+    console.log(body);
 
-//     // If Not Successful
-//     if(body.success !== undefined && !body.success){
-//       return res.json({"success": false, "msg":"Failed captcha verification"});
-//     }
+    // If Not Successful
+    if(body.success !== undefined && !body.success){
+      return res.json({"success": false, "msg":"Failed captcha verification"});
+    }
 
-//     //If Successful
-//     return res.json({"success": true, "msg":"Captcha passed"});
-//   });
-// });
+    //If Successful
+    return res.json({"success": true, "msg":"Form Submitted!"});
+  });
+});
   
 
 // get a form from the client and adds it to DB. 
