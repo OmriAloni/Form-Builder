@@ -6,18 +6,14 @@ export class Submit extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {  // state = form with all his updated fields
-            formID: this.props.location.state.form.formID,
-            formName: this.props.location.state.form.formName,
-            numOfSubmissions: this.props.location.state.form.numOfSubmissions,
+        this.state = { 
             labels: this.props.location.state.form.labels,
-            submits: this.props.location.state.form.submits
+            form: this.props.location.state.form
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmitForm = this.handleSubmitForm.bind(this);
         this.labelsToInputs = this.labelsToInputs.bind(this);
-        
     }
 
     // copy elemnts from the source arr to the target arr
@@ -29,34 +25,33 @@ export class Submit extends React.Component {
         return (target);
     }
 
+    updateDataBase(form) { // sends a submitted form to the server
+        var request = new XMLHttpRequest();  // XMLrequest
+        request.open('POST', submitAddress, false);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var formAsJson = JSON.stringify(form);
+        request.send(formAsJson); // send in json format
+    }
+
     handleInputChange(event) { // updates the input from I/O @event - onChange of inputs blocks
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
+        const value = event.target.value;
+        const name = event.target.name;
         
         let labels = this.state.labels.slice();
         for (let i in labels) {
             if (labels[i].inputName === name) { // serach for the input name in the inputs arr 
-                labels[i].inputFieldLabel = value; //update his values
+                labels[i].inputFieldLabel = value; //update his value
                 this.setState({ labels });
                 break;
             }
         }
     }
 
-    updateDataBase(params) { // sends a form to the server @params- form
-        var request = new XMLHttpRequest();  // XMLrequest
-        request.open('POST', submitAddress, true);
-        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var jsonToSend = JSON.stringify(params);
-        request.send(jsonToSend); // send in json format
-    }
-
     // handles "submit form" click. creates and sends the submited form to data base
     handleSubmitForm(event) {  
         event.preventDefault();
 
-        var formToAdd = this.props.location.state.form; // the form we send
+        var formToAdd = this.state.form; // the form we send
         formToAdd.numOfSubmissions = formToAdd.numOfSubmissions + 1; // update num of submmisions
 
         var submit = { // a submit object
@@ -70,19 +65,13 @@ export class Submit extends React.Component {
         formToAdd.submits.push(submit); // update the submit
 
         this.updateDataBase(formToAdd); // send to DB
-
-        let labels = this.state.labels.slice(); // initalize the labels
-        for (let i in labels) {
-                labels[i].inputFieldLabel = '';
-                this.setState({ labels });
-         }
     }
    
     render() {
         return (
             <div className="container">
-                <h2> {this.state.formName} form </h2>
-                <p> please fill the {this.state.formName} Form and click Submit </p>
+                <h2> {this.state.form.formName} form </h2>
+                <p> please fill the {this.state.form.formName} Form and click Submit </p>
       
                 <div className="form-group">
                     {this.state.labels.map((label, index) => (
@@ -104,10 +93,13 @@ export class Submit extends React.Component {
 
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-10">
-                        <button type="save" className="btn btn-success" onClick={this.handleSubmitForm}>Submit Form</button>
+                        <button type="save" className="btn btn-success" onClick={this.handleSubmitForm}>
+                            <NavLink to={"/Home"} className="White-Link" >
+                                Submit Form
+                            </NavLink>
+                        </button>
                     </div>
                 </div>
-                
 
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-10">

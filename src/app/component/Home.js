@@ -16,12 +16,13 @@ export class Home extends React.Component {
         this.handleDeleteForm = this.handleDeleteForm.bind(this);  
     }
     
-    componentWillMount(){ // runs at the begging of the component lifecycle to fetch data from DB
+    componentDidMount(){ // runs at the begging of the component lifecycle to fetch data from DB
         // fetch forms
         fetch(formsAddress)
         .then(res => res.json())
         .then (forms => this.setState({forms}, ()=> console.log('Forms fetched..',
         forms)));
+
         //fetch last
         fetch(lastAddress)
         .then(res => res.json())
@@ -32,27 +33,15 @@ export class Home extends React.Component {
     handleDeleteForm(formToDelete) { // handles "delete form" click. send a request to server to delete form
         event.preventDefault();
         
-        for (var i = 0; i < this.state.forms.length; i++) { // duplicates the server code - to be reconsidered
-            var curr_id = this.state.forms[i].formID;
-            if (formToDelete.formID === curr_id)
-            {
-              this.setState({forms: this.state.forms.splice(i, 1)}); //remove it from forms state
-              break;
-            }
-          }
-
         var request = new XMLHttpRequest(); // XMLrequest to delete the form
-        request.open('POST', deleteAddress, true);
+        request.open('POST', deleteAddress, false);
         request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         var formAsJson = JSON.stringify(formToDelete); // send in json format
         request.send(formAsJson);
-        console.log(this.state.forms);       
-        
-        // //fetch the forms again
-        // fetch(formsAddress)
-        // .then(res => res.json())
-        // .then (forms => this.setState({forms}));
-        // console.log(this.state.forms);
+
+        console.log(this.state.forms);
+        this.componentDidMount();
+        console.log(this.state.forms);
     }
 
     
@@ -116,7 +105,8 @@ export class Home extends React.Component {
                             <NavLink 
                                 to={{ pathname: "/Builder" , 
                                 state: { last: this.state.last } }} 
-                                className="White-Link" > Create Form 
+                                className="White-Link" >
+                                    Create Form 
                             </NavLink>
                         </button> 
                     </div>

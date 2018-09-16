@@ -37,7 +37,7 @@ export class Builder extends React.Component {
 
     updateDataBase(form) { // sends a form to the server @params- form
         var request = new XMLHttpRequest(); // XMLrequest
-        request.open('POST', formAddress, true);
+        request.open('POST', formAddress, false);
         request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         var formAsJson = JSON.stringify(form); // send in json format
         request.send(formAsJson);
@@ -57,7 +57,6 @@ export class Builder extends React.Component {
 
     handleSaveForm(event) { // handles "save form" click. sends the form to data base
         event.preventDefault();
-        if(this.state.formName !== ''){ // input check - cannot get empty name
             var form = { // the form that was created
                     formID: this.state.last ,
                     formName: this.state.formName,
@@ -72,7 +71,6 @@ export class Builder extends React.Component {
                 formName: '',
                 inputs: []
             });
-        }
     }
     
     handleDeleteLabel(inputToDelete) { // handles "delete label" click. delete the label from inputs arr
@@ -96,14 +94,16 @@ export class Builder extends React.Component {
             inputFieldLabel: document.getElementById("FieldLabel").value,
             inputType: document.getElementById("inputType").value
         };
-        if(newInput.inputName !== '' || newInput.inputFieldLabel !== '' ){ // cannot get empty values
+        if(newInput.inputName !== '' && newInput.inputFieldLabel !== '' ){ // cannot get empty values
             this.setState({ 
                 inputs: this.state.inputs.concat([newInput]), 
                 inputName:'',
                 inputFieldLabel:'',
              });
         }
-        else {}
+        else{
+            alert("Please enter both Input Name & Field Label")
+        }
     }
 
     render() {
@@ -216,7 +216,9 @@ export class Builder extends React.Component {
                     <div className="form-group">
                         <div className="col-sm-offset-2 col-sm-10">
                             <button type="save" className="btn btn-success" onClick={this.handleSaveForm}>
-                                    Save Form 
+                            <NavLink to={"/Home"} className="White-Link" >
+                                Save Form   
+                            </NavLink>
                             </button>
                         </div>
                     </div>
