@@ -59,10 +59,6 @@ export class Home extends React.Component {
                 <td>{props.data.numOfSubmissions}</td>
                 <td><NavLink to={{ pathname: '/Submit' + props.formPath, state: { form: props.data } }} > View </NavLink></td>
                 <td><NavLink to={{ pathname: '/Submissions' + props.formPath, state: { form: props.data } }} > View </NavLink></td>
-                <td> <button type="button" className="btn btn-danger btn-sm" onClick= {() => this.handleDeleteForm(props.data)}>
-                                Delete 
-                    </button>
-                </td>
             </tr>
         );
     }
@@ -91,7 +87,6 @@ export class Home extends React.Component {
                             <th>   # Submissions    </th>
                             <th>   Submit Page      </th>
                             <th>   Submissions Page </th>
-                            <th>                    </th>
                         </tr>
                     </thead>
                     <tbody> {rows} </tbody>

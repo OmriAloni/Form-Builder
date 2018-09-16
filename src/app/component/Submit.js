@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import  Recaptcha from'react-recaptcha';
 const submitAddress = 'http://localhost:5000/api/submit'; // adress to send a submission to DB
 
 export class Submit extends React.Component {
@@ -8,12 +9,16 @@ export class Submit extends React.Component {
         super(props);
         this.state = { 
             labels: this.props.location.state.form.labels,
-            form: this.props.location.state.form
+            form: this.props.location.state.form,
+            isVerified: false
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmitForm = this.handleSubmitForm.bind(this);
         this.labelsToInputs = this.labelsToInputs.bind(this);
+        this.recaptchaLoaded = this.recaptchaLoaded.bind(this);
+        this.verifyCallback = this.verifyCallback.bind(this);
+        
     }
 
     // copy elemnts from the source arr to the target arr
@@ -49,22 +54,47 @@ export class Submit extends React.Component {
 
     // handles "submit form" click. creates and sends the submited form to data base
     handleSubmitForm(event) {  
-        event.preventDefault();
+        if(this.state.isVerified){ // check if the user checked the recaptcha
+            event.preventDefault();
 
-        var formToAdd = this.state.form; // the form we send
-        formToAdd.numOfSubmissions = formToAdd.numOfSubmissions + 1; // update num of submmisions
+            var formToAdd = this.state.form; // the form we send
+            formToAdd.numOfSubmissions = formToAdd.numOfSubmissions + 1; // update num of submmisions
 
-        var submit = { // a submit object
-            submitID: formToAdd.submits.length,
-            inputs: []
-        };
+            var submit = { // a submit object
+                submitID: formToAdd.submits.length,
+                inputs: []
+            };
 
-        // copy elemnts from the labels arr to the submit inputs arr
-        submit.inputs = this.labelsToInputs(formToAdd.labels, submit.inputs); 
+            // copy elemnts from the labels arr to the submit inputs arr
+            submit.inputs = this.labelsToInputs(formToAdd.labels, submit.inputs); 
 
-        formToAdd.submits.push(submit); // update the submit
+            formToAdd.submits.push(submit); // update the submit
 
-        this.updateDataBase(formToAdd); // send to DB
+            this.updateDataBase(formToAdd); // send to DB
+            alert('Form Submitted!');
+
+            let labels = this.state.labels.slice();
+            for (let i in labels) {
+                    labels[i].inputFieldLabel = ''; //update his value
+                }
+            this.setState({ labels });
+        }
+        
+        else{
+            alert('Please verfiay your are not bot');
+        }
+    }
+
+    recaptchaLoaded(){ // make sure recaptcha was loaded
+        console.log('recaptcha loaded');
+    }
+
+    verifyCallback(response){ // user used recaptcha
+        if(response){
+            this.setState({
+                isVerified:true
+            });
+        }
     }
    
     render() {
@@ -94,11 +124,16 @@ export class Submit extends React.Component {
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-10">
                         <button type="save" className="btn btn-success" onClick={this.handleSubmitForm}>
-                            <NavLink to={"/Home"} className="White-Link" >
-                                Submit Form
-                            </NavLink>
+                            Submit
                         </button>
                     </div>
+                    &emsp;
+                    <Recaptcha
+                        sitekey="6LfHfHAUAAAAADZ4x1DTjB-69zURWAlkSKY875Jz"
+                        render="explicit"
+                        onloadCallback={this.recaptchaLoaded}
+                        verifyCallback={this.verifyCallback}
+                    />
                 </div>
 
                 <div className="form-group">
