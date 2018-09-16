@@ -17,7 +17,7 @@ export class Submit extends React.Component {
         this.handleSubmitForm = this.handleSubmitForm.bind(this);
         this.labelsToInputs = this.labelsToInputs.bind(this);
         this.recaptchaLoaded = this.recaptchaLoaded.bind(this);
-        this.verifyCallback = this.verifyCallback.bind(this);
+        this.userVerified = this.userVerified.bind(this);
         
     }
 
@@ -71,17 +71,18 @@ export class Submit extends React.Component {
             formToAdd.submits.push(submit); // update the submit
 
             this.updateDataBase(formToAdd); // send to DB
-            alert('Form Submitted!');
 
             let labels = this.state.labels.slice();
             for (let i in labels) {
                     labels[i].inputFieldLabel = ''; //update his value
                 }
             this.setState({ labels });
+
+            alert('Form Submitted!');
         }
-        
+
         else{
-            alert('Please verfiay your are not bot');
+            alert('Please verify your are not bot');
         }
     }
 
@@ -89,10 +90,10 @@ export class Submit extends React.Component {
         console.log('recaptcha loaded');
     }
 
-    verifyCallback(response){ // user used recaptcha
+    userVerified(response){ // user used recaptcha
         if(response){
             this.setState({
-                isVerified:true
+                isVerified: true
             });
         }
     }
@@ -127,12 +128,14 @@ export class Submit extends React.Component {
                             Submit
                         </button>
                     </div>
+
                     &emsp;
+
                     <Recaptcha
                         sitekey="6LfHfHAUAAAAADZ4x1DTjB-69zURWAlkSKY875Jz"
                         render="explicit"
                         onloadCallback={this.recaptchaLoaded}
-                        verifyCallback={this.verifyCallback}
+                        verifyCallback={this.userVerified}
                     />
                 </div>
 
