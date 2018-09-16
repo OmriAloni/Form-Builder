@@ -2,6 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import  Recaptcha from'react-recaptcha';
 const submitAddress = 'http://localhost:5000/api/submit'; // adress to send a submission to DB
+//const reCAPTCHAAddress = 'http://localhost:5000/api/reCAPTCHA'; // adress to send a submission to DB
+
 
 export class Submit extends React.Component {
 
@@ -54,6 +56,17 @@ export class Submit extends React.Component {
 
     // handles "submit form" click. creates and sends the submited form to data base
     handleSubmitForm(event) {  
+        // //server side
+        // const captcha = document.querySelector('#g-recaptcha-response').value;
+
+        // fetch(reCAPTCHAAddress)
+        //   .then((res) => res.json())
+        //   .then((data) => {
+        //     console.log(data);
+        //     alert(data.msg);
+        //   });
+
+        //client side
         if(this.state.isVerified){ // check if the user checked the recaptcha
             event.preventDefault();
 
