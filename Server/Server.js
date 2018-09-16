@@ -110,14 +110,18 @@ app.post('/api/submit',(req,res) =>{
     var db_id = db.forms[i].formID;
     if (req.body.formID === db_id)
     {
+        console.log(db_id);
+        console.log(db.forms[db_id]);
+        
       db.forms[db_id] = req.body;
+      console.log(db.forms);
       break;
     }
   }
   res.json(db.forms);
 })
 
-// get a form from client to delete from DB
+// get a form from client to delete from DB // delete
 app.post('/api/delete',(req,res) =>{
     for (var i = 0; i < db.forms.length; i++) {
       var db_id = db.forms[i].formID;
