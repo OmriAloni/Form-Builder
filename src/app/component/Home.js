@@ -45,7 +45,7 @@ export class Home extends React.Component {
     }
 
     
-    // forms a row at the forms table with the following columns
+    // forms a row at the forms table with the following columns.
     //  Form id
     //  Form Name
     //  Number of Submissions
