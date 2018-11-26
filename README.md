@@ -3,10 +3,10 @@
 Welcome to the Form Builder application. This app is simple, you can create a custom form and anyone can submit answer.
 
 Instructions:
-- Download the Wix-Form-Builder-master ZIP.
+- Download the Form-Builder-master ZIP.
 - Extract the files.
 - Open the terminal.
-- cd into \Wix-Form-Builder-master.
+- cd into \Form-Builder-master.
 - Type "npm i" and press enter. this may take a minute.
 - when done, type "cd Server" and press enter.
 - Type "npm i" and press enter. this may take a minute.
